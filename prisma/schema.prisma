@@ -1,0 +1,782 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ===================== AUTH & USERS =====================
+
+model User {
+  id                  String    @id @default(cuid())
+  name                String?
+  email               String    @unique
+  emailVerified       DateTime?
+  image               String?
+  password            String?
+  locale              String    @default("en")
+  timezone            String    @default("UTC")
+  role                UserRole  @default(USER)
+  onboardingCompleted Boolean   @default(false)
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  lastActiveAt        DateTime?
+
+  accounts         Account[]
+  sessions         Session[]
+  subscription     Subscription?
+  learnerProfile   LearnerProfile?
+  onboarding       OnboardingResponse[]
+  enrollments      UserCourseEnrollment[]
+  lessonProgress   UserLessonProgress[]
+  exerciseAttempts UserExerciseAttempt[]
+  quizAttempts     QuizAttempt[]
+  goals            Goal[]
+  streaks          Streak[]
+  knowledgeNodes   KnowledgeNode[]
+  achievements     UserAchievement[]
+  certificates     Certificate[]
+  aiConversations  AIConversation[]
+  learningEvents   LearningEvent[]
+  learningSessions LearningSession[]
+  dailyStats       DailyStudyStats[]
+  notifications    Notification[]
+  orgMemberships   OrgMember[]
+  groupMemberships GroupMember[]
+  groupMessages    GroupMessage[]
+  createdGroups    StudyGroup[]     @relation("GroupCreator")
+  createdCourses   Course[]         @relation("CourseCreator")
+  examSimulations  ExamSimulation[]
+  @@map("users")
+}
+
+enum UserRole { USER TEACHER MANAGER ORG_ADMIN SUPER_ADMIN }
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ===================== SUBSCRIPTIONS =====================
+
+model Subscription {
+  id                   String             @id @default(cuid())
+  userId               String             @unique
+  tier                 SubscriptionTier   @default(FREE)
+  status               SubscriptionStatus @default(ACTIVE)
+  stripeCustomerId     String?            @unique
+  stripeSubscriptionId String?            @unique
+  stripePriceId        String?
+  currentPeriodStart   DateTime?
+  currentPeriodEnd     DateTime?
+  cancelAtPeriodEnd    Boolean            @default(false)
+  trialEnd             DateTime?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@map("subscriptions")
+}
+
+enum SubscriptionTier { FREE STARTER PRO MASTER }
+enum SubscriptionStatus { ACTIVE CANCELLED PAST_DUE TRIALING }
+
+// ===================== LEARNER PROFILE =====================
+
+model LearnerProfile {
+  id                String         @id @default(cuid())
+  userId            String         @unique
+  learningStyle     Json           @default("{}")
+  pacePreference    PacePreference @default(NORMAL)
+  motivationType    MotivationType @default(CURIOSITY)
+  toughLoveLevel    ToughLoveLevel @default(BALANCED)
+  avgSessionMinutes Int            @default(0)
+  bestStudyHours    Json           @default("[]")
+  retentionRate     Float          @default(0)
+  totalXP           Int            @default(0)
+  level             Int            @default(1)
+  currentStreak     Int            @default(0)
+  longestStreak     Int            @default(0)
+  lastStudiedAt     DateTime?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@map("learner_profiles")
+}
+
+enum PacePreference { SLOW NORMAL FAST }
+enum MotivationType { GOAL CURIOSITY CAREER EXAM }
+enum ToughLoveLevel { GENTLE BALANCED STRICT }
+
+model OnboardingResponse {
+  id       String @id @default(cuid())
+  userId   String
+  step     Int
+  question String
+  answer   Json
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([userId, step])
+  @@map("onboarding_responses")
+}
+
+// ===================== COURSES & LESSONS =====================
+
+model Course {
+  id              String         @id @default(cuid())
+  title           String
+  slug            String         @unique
+  description     String         @db.Text
+  category        CourseCategory
+  subcategory     String         @default("")
+  difficulty      Difficulty     @default(BEGINNER)
+  estimatedHours  Float          @default(1)
+  language        String         @default("en")
+  isPublished     Boolean        @default(false)
+  isAIGenerated   Boolean        @default(false)
+  thumbnailUrl    String?
+  rating          Float          @default(0)
+  enrollmentCount Int            @default(0)
+  creatorId       String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  creator     User?                 @relation("CourseCreator", fields: [creatorId], references: [id])
+  modules     Module[]
+  enrollments UserCourseEnrollment[]
+  quizzes     Quiz[]
+  @@map("courses")
+}
+
+enum CourseCategory { IT_PROGRAMMING BUSINESS_MANAGEMENT MARKETING LANGUAGES EXAM_PREP SCIENCES DESIGN_CREATIVITY FINANCE_ACCOUNTING LAW_LEGISLATION HEALTH_MEDICINE SOFT_SKILLS CUSTOM }
+enum Difficulty { BEGINNER INTERMEDIATE ADVANCED }
+
+model Module {
+  id       String @id @default(cuid())
+  courseId  String
+  title    String
+  order    Int
+  course  Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons Lesson[]
+  @@unique([courseId, order])
+  @@map("modules")
+}
+
+model Lesson {
+  id               String     @id @default(cuid())
+  moduleId         String
+  title            String
+  order            Int
+  type             LessonType @default(TEXT)
+  content          Json       @default("[]")
+  estimatedMinutes Int        @default(10)
+  module    Module               @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  progress  UserLessonProgress[]
+  exercises Exercise[]
+  @@unique([moduleId, order])
+  @@map("lessons")
+}
+
+enum LessonType { TEXT INTERACTIVE VIDEO PRACTICE }
+
+// ===================== EXERCISES & QUIZZES =====================
+
+model Exercise {
+  id            String       @id @default(cuid())
+  lessonId      String?
+  type          ExerciseType
+  question      String       @db.Text
+  options       Json?
+  correctAnswer Json
+  explanation   String       @db.Text
+  difficulty    Int          @default(5)
+  hints         Json         @default("[]")
+  isAIGenerated Boolean      @default(false)
+  createdAt     DateTime     @default(now())
+  lesson   Lesson?              @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  attempts UserExerciseAttempt[]
+  @@map("exercises")
+}
+
+enum ExerciseType { MULTIPLE_CHOICE TRUE_FALSE FILL_BLANK OPEN_ENDED CODE MATCHING ORDERING }
+
+model UserExerciseAttempt {
+  id              String   @id @default(cuid())
+  userId          String
+  exerciseId      String
+  answer          Json
+  isCorrect       Boolean
+  timeToAnswer    Int      @default(0)
+  confidenceLevel Int?
+  hintsUsed       Int      @default(0)
+  attemptedAt     DateTime @default(now())
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exercise Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  @@map("user_exercise_attempts")
+}
+
+model Quiz {
+  id            String   @id @default(cuid())
+  title         String
+  courseId       String?
+  type          QuizType @default(LESSON_CHECK)
+  questionCount Int      @default(10)
+  timeLimitMin  Int?
+  passingScore  Int      @default(70)
+  questions     Json     @default("[]")
+  createdAt     DateTime @default(now())
+  course   Course?       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  attempts QuizAttempt[]
+  @@map("quizzes")
+}
+
+enum QuizType { LESSON_CHECK MODULE_TEST COURSE_FINAL CUSTOM }
+
+model QuizAttempt {
+  id              String    @id @default(cuid())
+  userId          String
+  quizId          String
+  score           Float
+  totalQuestions  Int
+  correctAnswers  Int
+  timeSpent       Int       @default(0)
+  detailedResults Json      @default("[]")
+  startedAt       DateTime  @default(now())
+  completedAt     DateTime?
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quiz Quiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  @@map("quiz_attempts")
+}
+
+// ===================== PROGRESS =====================
+
+model UserCourseEnrollment {
+  id              String           @id @default(cuid())
+  userId          String
+  courseId         String
+  status          EnrollmentStatus @default(ACTIVE)
+  progressPercent Float            @default(0)
+  startedAt       DateTime         @default(now())
+  completedAt     DateTime?
+  lastAccessedAt  DateTime         @default(now())
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  @@unique([userId, courseId])
+  @@map("user_course_enrollments")
+}
+
+enum EnrollmentStatus { ACTIVE COMPLETED PAUSED ABANDONED }
+
+model UserLessonProgress {
+  id         String       @id @default(cuid())
+  userId     String
+  lessonId   String
+  status     LessonStatus @default(NOT_STARTED)
+  startedAt  DateTime?
+  completedAt DateTime?
+  timeSpent  Int          @default(0)
+  score      Float?
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  @@unique([userId, lessonId])
+  @@map("user_lesson_progress")
+}
+
+enum LessonStatus { NOT_STARTED IN_PROGRESS COMPLETED }
+
+// ===================== GOALS =====================
+
+model Goal {
+  id              String     @id @default(cuid())
+  userId          String
+  title           String
+  description     String?    @db.Text
+  type            GoalType   @default(CURIOSITY)
+  targetDate      DateTime?
+  relatedCourseId String?
+  progressPercent Float      @default(0)
+  aiStudyPlan     Json?
+  status          GoalStatus @default(ACTIVE)
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@map("goals")
+}
+
+enum GoalType { EXAM SKILL CAREER CURIOSITY CUSTOM }
+enum GoalStatus { ACTIVE COMPLETED ABANDONED }
+
+// ===================== KNOWLEDGE GRAPH =====================
+
+model KnowledgeNode {
+  id               String        @id @default(cuid())
+  userId           String
+  topicId          String
+  topicName        String
+  masteryLevel     Float         @default(0)
+  lastReviewed     DateTime?
+  nextReviewDue    DateTime?
+  timesReviewed    Int           @default(0)
+  timesCorrect     Int           @default(0)
+  forgettingParams Json          @default("{}")
+  status           MasteryStatus @default(NOT_STARTED)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  prerequisites KnowledgeEdge[] @relation("EdgeTo")
+  dependents    KnowledgeEdge[] @relation("EdgeFrom")
+  @@unique([userId, topicId])
+  @@map("knowledge_nodes")
+}
+
+enum MasteryStatus { NOT_STARTED LEARNING REVIEWING MASTERED }
+
+model KnowledgeEdge {
+  id           String       @id @default(cuid())
+  fromNodeId   String
+  toNodeId     String
+  relationType RelationType @default(RELATED)
+  fromNode KnowledgeNode @relation("EdgeFrom", fields: [fromNodeId], references: [id], onDelete: Cascade)
+  toNode   KnowledgeNode @relation("EdgeTo", fields: [toNodeId], references: [id], onDelete: Cascade)
+  @@unique([fromNodeId, toNodeId])
+  @@map("knowledge_edges")
+}
+
+enum RelationType { PREREQUISITE RELATED BUILDS_ON }
+
+// ===================== GAMIFICATION =====================
+
+model Streak {
+  id             String   @id @default(cuid())
+  userId         String
+  date           DateTime @db.Date
+  minutesStudied Int      @default(0)
+  xpEarned       Int      @default(0)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([userId, date])
+  @@map("streaks")
+}
+
+model Achievement {
+  id          String            @id @default(cuid())
+  name        String            @unique
+  description String
+  iconUrl     String?
+  rarity      AchievementRarity @default(COMMON)
+  condition   Json
+  users UserAchievement[]
+  @@map("achievements")
+}
+
+enum AchievementRarity { COMMON UNCOMMON RARE EPIC LEGENDARY }
+
+model UserAchievement {
+  id            String   @id @default(cuid())
+  userId        String
+  achievementId String
+  unlockedAt    DateTime @default(now())
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievement Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+  @@unique([userId, achievementId])
+  @@map("user_achievements")
+}
+
+// ===================== AI CONVERSATIONS =====================
+
+model AIConversation {
+  id        String             @id @default(cuid())
+  userId    String
+  topicId   String?
+  courseId   String?
+  type      AIConversationType @default(STUDY_BUDDY)
+  title     String?
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+  user     User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages AIMessage[]
+  convictionStates ConvictionDbState[]
+  @@map("ai_conversations")
+}
+
+enum AIConversationType { STUDY_BUDDY LESSON ASSESSMENT EXAM_PREP }
+
+model AIMessage {
+  id             String   @id @default(cuid())
+  conversationId String
+  role           AIRole
+  content        String   @db.Text
+  tokensUsed     Int      @default(0)
+  metadata       Json     @default("{}")
+  createdAt      DateTime @default(now())
+  conversation AIConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  @@map("ai_messages")
+}
+
+enum AIRole { user assistant system }
+
+model ConvictionDbState {
+  id              String  @id @default(cuid())
+  conversationId  String
+  claimId         String
+  aiPosition      String  @db.Text
+  confidenceLevel Int
+  escalationLevel Int     @default(1)
+  resolved        Boolean @default(false)
+  conversation AIConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  @@unique([conversationId, claimId])
+  @@map("conviction_states")
+}
+
+// ===================== TRACKING =====================
+
+model LearningEvent {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String
+  metadata  Json     @default("{}")
+  sessionId String?
+  timestamp DateTime @default(now())
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId, timestamp])
+  @@index([userId, type])
+  @@map("learning_events")
+}
+
+model LearningSession {
+  id                 String    @id @default(cuid())
+  userId             String
+  startedAt          DateTime  @default(now())
+  endedAt            DateTime?
+  durationSeconds    Int       @default(0)
+  activeSeconds      Int       @default(0)
+  topicsStudied      Json      @default("[]")
+  exercisesCompleted Int       @default(0)
+  lessonsCompleted   Int       @default(0)
+  xpEarned           Int       @default(0)
+  device             String?
+  browser            String?
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId, startedAt])
+  @@map("learning_sessions")
+}
+
+model DailyStudyStats {
+  id                 String   @id @default(cuid())
+  userId             String
+  date               DateTime @db.Date
+  totalMinutes       Int      @default(0)
+  activeMinutes      Int      @default(0)
+  lessonsCompleted   Int      @default(0)
+  exercisesCompleted Int      @default(0)
+  quizzesCompleted   Int      @default(0)
+  flashcardsReviewed Int      @default(0)
+  xpEarned           Int      @default(0)
+  aiMessagesUsed     Int      @default(0)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([userId, date])
+  @@map("daily_study_stats")
+}
+
+// ===================== NOTIFICATIONS =====================
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String
+  title     String
+  body      String   @db.Text
+  actionUrl String?
+  channel   String   @default("IN_APP")
+  isRead    Boolean  @default(false)
+  sentAt    DateTime @default(now())
+  readAt    DateTime?
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId, isRead])
+  @@map("notifications")
+}
+
+// ===================== CERTIFICATES =====================
+
+model Certificate {
+  id             String          @id @default(cuid())
+  userId         String
+  courseId        String
+  type           CertificateType @default(COMPLETION)
+  title          String
+  score          Float?
+  hoursSpent     Float?
+  pdfUrl         String?
+  linkedInShared Boolean         @default(false)
+  issuedAt       DateTime        @default(now())
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@map("certificates")
+}
+
+enum CertificateType { COMPLETION PROFICIENCY MASTERY }
+
+// ===================== EXAM SIMULATOR =====================
+
+model ExamTemplate {
+  id            String   @id @default(cuid())
+  name          String
+  description   String?  @db.Text
+  country       String?
+  examType      String
+  totalQuestions Int
+  timeLimitMin  Int?
+  passingScore  Int      @default(70)
+  format        Json     @default("{}")
+  questions     Json     @default("[]")
+  createdAt     DateTime @default(now())
+  simulations ExamSimulation[]
+  @@map("exam_templates")
+}
+
+model ExamSimulation {
+  id          String    @id @default(cuid())
+  userId      String
+  templateId  String
+  score       Float?
+  passed      Boolean?
+  answers     Json      @default("[]")
+  analysis    Json?
+  timeSpent   Int       @default(0)
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
+  user     User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  template ExamTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  @@map("exam_simulations")
+}
+
+// ===================== STUDY GROUPS =====================
+
+model StudyGroup {
+  id          String   @id @default(cuid())
+  name        String
+  description String?  @db.Text
+  topicId     String?
+  courseId     String?
+  creatorId   String
+  maxMembers  Int      @default(20)
+  isPublic    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  creator    User           @relation("GroupCreator", fields: [creatorId], references: [id])
+  members    GroupMember[]
+  messages   GroupMessage[]
+  challenges GroupChallenge[]
+  @@map("study_groups")
+}
+
+model GroupMember {
+  id       String          @id @default(cuid())
+  groupId  String
+  userId   String
+  role     GroupMemberRole @default(MEMBER)
+  joinedAt DateTime        @default(now())
+  group StudyGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user  User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([groupId, userId])
+  @@map("group_members")
+}
+
+enum GroupMemberRole { OWNER ADMIN MEMBER }
+
+model GroupMessage {
+  id        String   @id @default(cuid())
+  groupId   String
+  userId    String
+  content   String   @db.Text
+  type      String   @default("TEXT")
+  createdAt DateTime @default(now())
+  group StudyGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user  User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@map("group_messages")
+}
+
+model GroupChallenge {
+  id          String    @id @default(cuid())
+  groupId     String
+  title       String
+  description String?
+  type        String
+  startsAt    DateTime
+  endsAt      DateTime
+  results     Json      @default("[]")
+  group StudyGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  @@map("group_challenges")
+}
+
+// ===================== ORGANIZATIONS =====================
+
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  type      OrgType
+  country   String?
+  city      String?
+  website   String?
+  logoUrl   String?
+  industry  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  subscription  OrgSubscription?
+  members       OrgMember[]
+  classes       Class[]
+  departments   Department[]
+  learningPaths BizLearningPath[]
+  @@map("organizations")
+}
+
+enum OrgType { SCHOOL HIGH_SCHOOL UNIVERSITY BUSINESS }
+
+model OrgSubscription {
+  id                   String             @id @default(cuid())
+  orgId                String             @unique
+  plan                 String
+  maxSeats             Int
+  usedSeats            Int                @default(0)
+  pricePerSeat         Int
+  stripeCustomerId     String?            @unique
+  stripeSubscriptionId String?            @unique
+  status               SubscriptionStatus @default(ACTIVE)
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  @@map("org_subscriptions")
+}
+
+model OrgMember {
+  id         String        @id @default(cuid())
+  orgId      String
+  userId     String
+  role       OrgMemberRole @default(EMPLOYEE)
+  department String?
+  jobTitle   String?
+  joinedAt   DateTime      @default(now())
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([orgId, userId])
+  @@map("org_members")
+}
+
+enum OrgMemberRole { ORG_ADMIN TEACHER STUDENT PARENT MANAGER EMPLOYEE }
+
+model Class {
+  id        String   @id @default(cuid())
+  orgId     String
+  name      String
+  teacherId String
+  createdAt DateTime @default(now())
+  organization Organization  @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  students     ClassStudent[]
+  assignments  Assignment[]
+  @@map("classes")
+}
+
+model ClassStudent {
+  id           String  @id @default(cuid())
+  classId      String
+  userId       String
+  parentUserId String?
+  class_ Class @relation(fields: [classId], references: [id], onDelete: Cascade)
+  @@unique([classId, userId])
+  @@map("class_students")
+}
+
+model Assignment {
+  id          String    @id @default(cuid())
+  classId     String
+  teacherId   String
+  title       String
+  description String?   @db.Text
+  type        String
+  contentId   String?
+  dueDate     DateTime?
+  createdAt   DateTime  @default(now())
+  class_      Class                  @relation(fields: [classId], references: [id], onDelete: Cascade)
+  submissions AssignmentSubmission[]
+  @@map("assignments")
+}
+
+model AssignmentSubmission {
+  id           String    @id @default(cuid())
+  assignmentId String
+  studentId    String
+  status       String    @default("NOT_STARTED")
+  score        Float?
+  aiAnalysis   Json?
+  submittedAt  DateTime?
+  gradedAt     DateTime?
+  assignment Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  @@unique([assignmentId, studentId])
+  @@map("assignment_submissions")
+}
+
+model Department {
+  id        String   @id @default(cuid())
+  orgId     String
+  name      String
+  managerId String?
+  createdAt DateTime @default(now())
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  @@map("departments")
+}
+
+model BizLearningPath {
+  id          String    @id @default(cuid())
+  orgId       String
+  title       String
+  description String?   @db.Text
+  isRequired  Boolean   @default(false)
+  dueDate     DateTime?
+  courses     Json      @default("[]")
+  assignedTo  String    @default("COMPANY")
+  createdAt   DateTime  @default(now())
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  assignments  EmployeePath[]
+  @@map("biz_learning_paths")
+}
+
+model EmployeePath {
+  id              String    @id @default(cuid())
+  userId          String
+  pathId          String
+  status          String    @default("NOT_STARTED")
+  progressPercent Float     @default(0)
+  startedAt       DateTime?
+  completedAt     DateTime?
+  dueDate         DateTime?
+  path BizLearningPath @relation(fields: [pathId], references: [id], onDelete: Cascade)
+  @@unique([userId, pathId])
+  @@map("employee_paths")
+}
