@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, BookOpen, Dumbbell, MessageSquare, Target, BarChart3, Network, Users, Trophy, Award, Settings, ChevronLeft, ChevronRight, Flame, Zap } from "lucide-react";
+import { LayoutDashboard, BookOpen, Dumbbell, MessageSquare, Target, BarChart3, Network, Users, Trophy, Award, Settings, ChevronLeft, ChevronRight, Flame, Zap, Mic, Sparkles, Calendar, Waves } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -11,6 +11,11 @@ const items = [
   { href: "/learn", label: "Learn", icon: BookOpen },
   { href: "/practice", label: "Practice", icon: Dumbbell },
   { href: "/ai-chat", label: "AI Chat", icon: MessageSquare },
+  { href: "/voice", label: "Voice Tutor", icon: Waves },
+  { href: "/pronunciation", label: "Pronunciation", icon: Mic },
+  { href: "/ai-coach", label: "AI Coach", icon: Sparkles },
+  { href: "/ai-planner", label: "AI Planner", icon: Calendar },
+  { href: "/ai-exam-predictor", label: "Exam Predictor", icon: Target },
   { href: "/goals", label: "Goals", icon: Target },
   { href: "/stats", label: "Statistics", icon: BarChart3 },
   { href: "/knowledge-map", label: "Knowledge Map", icon: Network },
