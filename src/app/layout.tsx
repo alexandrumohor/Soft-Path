@@ -21,7 +21,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} dark h-full antialiased`}>
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: `try{var t=JSON.parse(localStorage.getItem("gp-theme")||"{}");if(t.state&&t.state.theme==="dark")document.documentElement.classList.add("dark")}catch(e){}` }} />
+      </head>
       <body className="min-h-full flex flex-col">
         <Providers>
           <Navbar />

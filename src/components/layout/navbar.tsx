@@ -7,6 +7,7 @@ import { Menu, X, User, LogOut, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
+import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { useTranslations } from "@/hooks/use-translations";
 
 const navLinks = (t: (k: string) => string) => [
@@ -54,6 +55,7 @@ export function Navbar() {
                 <span>{session?.user?.name || session?.user?.email}</span>
               </Link>
               <LanguageSwitcher />
+              <ThemeToggle />
               <Button variant="ghost" size="sm" onClick={() => signOut({ callbackUrl: "/" })}>
                 <LogOut className="mr-2 h-4 w-4" />{tc("logout")}
               </Button>
@@ -61,6 +63,7 @@ export function Navbar() {
           ) : (
             <>
               <LanguageSwitcher />
+              <ThemeToggle />
               <Link href="/login"><Button variant="ghost" size="sm">{tc("login")}</Button></Link>
               <Link href="/register"><Button size="sm" className="glow-amber">{tc("startFree")}</Button></Link>
             </>
@@ -91,14 +94,14 @@ export function Navbar() {
                   <Link href="/learn" onClick={() => setIsOpen(false)} className="rounded-md px-3 py-2 text-base font-medium text-muted-foreground hover:text-foreground">{t("learn")}</Link>
                   <Link href="/settings" onClick={() => setIsOpen(false)} className="rounded-md px-3 py-2 text-base font-medium text-muted-foreground hover:text-foreground">{tc("settings")}</Link>
                   <div className="my-2 h-px bg-border" />
-                  <div className="px-3"><LanguageSwitcher /></div>
+                  <div className="flex items-center gap-3 px-3"><LanguageSwitcher /><ThemeToggle /></div>
                   <Button variant="ghost" className="w-full justify-start" onClick={() => { setIsOpen(false); signOut({ callbackUrl: "/" }); }}><LogOut className="mr-2 h-4 w-4" />{tc("logout")}</Button>
                 </>
               ) : (
                 <>
                   {links.map((l) => (<Link key={l.href} href={l.href} onClick={() => setIsOpen(false)} className="rounded-md px-3 py-2 text-base font-medium text-muted-foreground hover:text-foreground">{l.label}</Link>))}
                   <div className="my-2 h-px bg-border" />
-                  <div className="px-3"><LanguageSwitcher /></div>
+                  <div className="flex items-center gap-3 px-3"><LanguageSwitcher /><ThemeToggle /></div>
                   <Link href="/login" onClick={() => setIsOpen(false)}><Button variant="ghost" className="w-full justify-start">{tc("login")}</Button></Link>
                   <Link href="/register" onClick={() => setIsOpen(false)}><Button className="w-full">{tc("startFree")}</Button></Link>
                 </>
