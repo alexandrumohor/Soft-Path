@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Flame, Zap, Clock, Brain, BookOpen, Dumbbell, Layers, MessageSquare, ArrowRight, Target, TrendingUp, Calendar } from "lucide-react";
+import { auth } from "@/lib/auth";
 
 const mock = {
   name:"User", streak:12, totalXP:1250, level:8, todayMin:24, weekGoal:150, weekProg:96,
@@ -15,8 +16,9 @@ const mock = {
 };
 const heat = Array.from({length:84},()=>({m:Math.random()>0.3?Math.floor(Math.random()*120):0}));
 
-export default function DashboardPage() {
-  const d = mock;
+export default async function DashboardPage() {
+  const session = await auth();
+  const d = { ...mock, name: session?.user?.name?.split(" ")[0] || "User" };
   return (
     <div className="p-6 lg:p-8">
       <div className="mb-8"><h1 className="text-2xl font-bold">Welcome back, <span className="text-gradient">{d.name}</span>!</h1><p className="mt-1 text-sm text-muted-foreground">Let&apos;s keep the momentum going.</p></div>
