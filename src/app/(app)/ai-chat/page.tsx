@@ -11,10 +11,10 @@ export default function AIChatPage() {
   const [input,setInput]=useState("");
   const chatRef=useRef<HTMLDivElement>(null);
   const inputRef=useRef<HTMLTextAreaElement>(null);
-  const {messages,isLoading,error,sendMessage,stopGenerating,clearMessages}=useAIChat({toughLove:"BALANCED"});
+  const locale = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("gp-language") || "{}").state?.locale : "en";
+  const {messages,isLoading,error,sendMessage,stopGenerating,clearMessages}=useAIChat({toughLove:"BALANCED",locale});
   const t = useTranslations("aiChat");
 
-  const locale = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("gp-language") || "{}").state?.locale : "en";
   const isRo = locale === "ro";
 
   const QP = [
