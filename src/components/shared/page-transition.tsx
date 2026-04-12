@@ -19,10 +19,10 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
   return (
     <div
       key={key}
-      className="transition-all duration-500 ease-out"
+      className="transition-all duration-700 ease-out"
       style={{
         opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0)" : "translateY(16px)",
+        transform: visible ? "translateY(0)" : "translateY(60px)",
       }}
     >
       {children}
