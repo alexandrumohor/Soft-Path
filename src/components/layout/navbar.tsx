@@ -3,9 +3,10 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
-import { Menu, X, ChevronDown, Globe, User, LogOut, LayoutDashboard } from "lucide-react";
+import { Menu, X, User, LogOut, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
 
 const navLinks = [
   { href: "#features", label: "Features" },
@@ -47,13 +48,14 @@ export function Navbar() {
                 )}
                 <span>{session?.user?.name || session?.user?.email}</span>
               </Link>
+              <LanguageSwitcher />
               <Button variant="ghost" size="sm" onClick={() => signOut({ callbackUrl: "/" })}>
                 <LogOut className="mr-2 h-4 w-4" />Sign Out
               </Button>
             </>
           ) : (
             <>
-              <button className="flex items-center gap-1 rounded-md px-2 py-1.5 text-sm text-muted-foreground hover:text-foreground"><Globe className="h-4 w-4" /><span>EN</span><ChevronDown className="h-3 w-3" /></button>
+              <LanguageSwitcher />
               <Link href="/login"><Button variant="ghost" size="sm">Log In</Button></Link>
               <Link href="/register"><Button size="sm" className="glow-amber">Start Free</Button></Link>
             </>
