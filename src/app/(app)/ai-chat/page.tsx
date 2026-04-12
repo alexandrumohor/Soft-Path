@@ -33,7 +33,7 @@ export default function AIChatPage() {
   function onKey(e:React.KeyboardEvent){if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();onSubmit(e);}}
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] flex-col">
+    <div className="flex h-[calc(100vh-4rem)] flex-col overflow-hidden">
       <div className="flex items-center justify-between border-b border-border/50 px-6 py-3">
         <div className="flex items-center gap-3"><Image src="/icon.png" alt="SP" width={32} height={32} className="h-8 w-8 rounded-full" /><div><h1 className="text-sm font-semibold">AI Study Buddy</h1><p className="text-xs text-muted-foreground">Ask anything. I&apos;ll teach, not just answer.</p></div></div>
         <div className="flex items-center gap-2"><Badge variant="outline" className="text-xs">Balanced Mode</Badge>{messages.length>0&&<Button variant="ghost" size="sm" onClick={clearMessages}><Trash2 className="h-3.5 w-3.5"/></Button>}</div>
