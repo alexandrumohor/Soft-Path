@@ -40,12 +40,12 @@ export function Navbar() {
           {loggedIn ? (
             <>
               <Link href="/settings" className="flex items-center gap-2 rounded-md px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground">
-                {session.user.image ? (
-                  <Image src={session.user.image} alt="" width={24} height={24} className="h-6 w-6 rounded-full" />
+                {session?.user?.image ? (
+                  <Image src={session?.user?.image} alt="" width={24} height={24} className="h-6 w-6 rounded-full" />
                 ) : (
                   <User className="h-4 w-4" />
                 )}
-                <span>{session.user.name || session.user.email}</span>
+                <span>{session?.user?.name || session?.user?.email}</span>
               </Link>
               <Button variant="ghost" size="sm" onClick={() => signOut({ callbackUrl: "/" })}>
                 <LogOut className="mr-2 h-4 w-4" />Sign Out
@@ -69,14 +69,14 @@ export function Navbar() {
               {loggedIn ? (
                 <>
                   <div className="flex items-center gap-3 px-3 py-2">
-                    {session.user.image ? (
-                      <Image src={session.user.image} alt="" width={32} height={32} className="h-8 w-8 rounded-full" />
+                    {session?.user?.image ? (
+                      <Image src={session?.user?.image} alt="" width={32} height={32} className="h-8 w-8 rounded-full" />
                     ) : (
                       <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10"><User className="h-4 w-4 text-primary" /></div>
                     )}
                     <div>
-                      <p className="text-sm font-medium">{session.user.name}</p>
-                      <p className="text-xs text-muted-foreground">{session.user.email}</p>
+                      <p className="text-sm font-medium">{session?.user?.name}</p>
+                      <p className="text-xs text-muted-foreground">{session?.user?.email}</p>
                     </div>
                   </div>
                   <div className="my-2 h-px bg-border" />
