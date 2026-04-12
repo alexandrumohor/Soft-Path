@@ -1,177 +1,305 @@
 "use client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Brain, Target, BarChart3, ShieldCheck, Sparkles, Trophy, Clock, BookOpen, MessageSquare, Zap, GraduationCap, Building2, ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Check, Brain, BarChart3, Zap, Target, Users, Star, ChevronDown } from "lucide-react";
 import { useTranslations } from "@/hooks/use-translations";
+import { useState } from "react";
 
 export default function LandingPage() {
   const t = useTranslations("hero");
-  const tf = useTranslations("features");
   const tc = useTranslations("common");
-  const tp = useTranslations("pricing");
+  const [faqOpen, setFaqOpen] = useState<number | null>(null);
 
-  return (<>
-    {/* HERO */}
-    <section className="relative overflow-hidden">
-      <div className="absolute inset-0 bg-grid opacity-40" />
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 h-[500px] w-[800px] rounded-full bg-primary/5 blur-3xl" />
-      <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8 lg:py-40">
-        <div className="mx-auto max-w-3xl text-center">
-          <Badge variant="secondary" className="mb-6 px-4 py-1.5 text-sm"><Sparkles className="mr-1.5 h-3.5 w-3.5" />AI-Powered Learning Platform</Badge>
-          <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-7xl">{t("title")}<br /><span className="text-gradient">{t("titleHighlight")}</span></h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground leading-relaxed sm:text-xl">{t("subtitle")}</p>
-          <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-            <Link href="/register"><Button size="lg" className="glow-amber text-base px-8 h-12">{tc("getStarted")}<ArrowRight className="ml-2 h-4 w-4" /></Button></Link>
-            <Link href="#how-it-works"><Button variant="outline" size="lg" className="text-base px-8 h-12">{tc("learnMore")}</Button></Link>
-          </div>
-          <div className="mt-14 flex items-center justify-center gap-8 text-sm text-muted-foreground">
-            <div className="flex flex-col items-center"><span className="text-2xl font-bold text-foreground">12+</span><span>Domenii</span></div>
-            <div className="h-8 w-px bg-border" />
-            <div className="flex flex-col items-center"><span className="text-2xl font-bold text-foreground">24/7</span><span>Tutor AI</span></div>
-            <div className="h-8 w-px bg-border" />
-            <div className="flex flex-col items-center"><span className="text-2xl font-bold text-foreground">100%</span><span>Personalizat</span></div>
-          </div>
-        </div>
-      </div>
-    </section>
+  return (
+    <>
+      {/* ─── HERO ─── */}
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.03] to-transparent" />
+        <div className="relative mx-auto max-w-6xl px-6 pt-24 pb-20 sm:pt-32 sm:pb-28 lg:pt-40 lg:pb-36">
+          <div className="mx-auto max-w-3xl text-center">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-sm text-muted-foreground">
+              <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+              AI-Powered Learning Platform
+            </div>
 
-    {/* AI DEMO */}
-    <section className="border-y border-border/50 bg-muted/20">
-      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8"><div className="mx-auto max-w-4xl">
-        <div className="overflow-hidden rounded-xl border border-border/50 bg-card shadow-2xl">
-          <div className="flex items-center gap-2 border-b border-border/50 bg-muted/50 px-4 py-3">
-            <div className="h-3 w-3 rounded-full bg-red-500/60" /><div className="h-3 w-3 rounded-full bg-yellow-500/60" /><div className="h-3 w-3 rounded-full bg-green-500/60" />
-            <span className="ml-3 text-xs text-muted-foreground">{t("aiDemo")}</span>
+            <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl leading-[1.1]">
+              Sistemul tău personal de învățare,{" "}
+              <span className="text-gradient">bazat pe AI</span>
+            </h1>
+
+            <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground leading-relaxed">
+              Un AI care învață cum înveți tu și îți optimizează progresul în timp real.
+              Nu un simplu chatbot — un tutor care te cunoaște.
+            </p>
+
+            <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+              <Link href="/register">
+                <Button size="lg" className="h-12 px-8 text-base font-medium">
+                  Începe gratuit
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+              <Link href="#cum-functioneaza">
+                <Button variant="outline" size="lg" className="h-12 px-8 text-base font-medium">
+                  Află mai mult
+                </Button>
+              </Link>
+            </div>
           </div>
-          <div className="space-y-4 p-6">
-            <div className="flex justify-end"><div className="max-w-sm rounded-2xl rounded-br-md bg-primary px-4 py-2.5 text-sm text-primary-foreground">I think lists and tuples are the same thing in Python, right?</div></div>
-            <div className="flex gap-3">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary"><Brain className="h-4 w-4" /></div>
-              <div className="max-w-lg rounded-2xl rounded-bl-md bg-muted px-4 py-3 text-sm leading-relaxed">
-                <p><strong>Not quite!</strong> They look similar, but there&apos;s a key difference:</p>
-                <ul className="mt-2 ml-4 list-disc space-y-1 text-muted-foreground">
-                  <li><strong className="text-foreground">Lists</strong> are <strong className="text-foreground">mutable</strong> &mdash; you can change them</li>
-                  <li><strong className="text-foreground">Tuples</strong> are <strong className="text-foreground">immutable</strong> &mdash; once created, can&apos;t be modified</li>
-                </ul>
-                <p className="mt-2 text-muted-foreground">Can you think of a situation where you&apos;d want data that can&apos;t be changed?</p>
+
+          {/* Dashboard mockup */}
+          <div className="mt-16 mx-auto max-w-4xl">
+            <div className="rounded-xl border border-border bg-card p-1 shadow-2xl shadow-primary/5">
+              <div className="rounded-lg bg-muted/50 p-6 sm:p-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="h-3 w-3 rounded-full bg-red-400/60" />
+                  <div className="h-3 w-3 rounded-full bg-yellow-400/60" />
+                  <div className="h-3 w-3 rounded-full bg-green-400/60" />
+                  <span className="ml-3 text-xs text-muted-foreground">Granted Path — Dashboard</span>
+                </div>
+                <div className="grid gap-4 sm:grid-cols-3">
+                  <div className="rounded-lg border border-border bg-card p-4">
+                    <p className="text-xs text-muted-foreground">Progres Zilnic</p>
+                    <p className="mt-1 text-2xl font-semibold">87%</p>
+                    <div className="mt-2 h-1.5 rounded-full bg-muted"><div className="h-1.5 rounded-full bg-primary" style={{width:"87%"}} /></div>
+                  </div>
+                  <div className="rounded-lg border border-border bg-card p-4">
+                    <p className="text-xs text-muted-foreground">Serie Curentă</p>
+                    <p className="mt-1 text-2xl font-semibold">12 zile</p>
+                    <p className="mt-2 text-xs text-primary">↑ Record personal</p>
+                  </div>
+                  <div className="rounded-lg border border-border bg-card p-4">
+                    <p className="text-xs text-muted-foreground">AI Recomandare</p>
+                    <p className="mt-1 text-sm text-muted-foreground">Revizuiește Python loops — risc de uitare detectat</p>
+                  </div>
+                </div>
               </div>
             </div>
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <div className="flex gap-1"><span className="h-1.5 w-1.5 animate-bounce rounded-full bg-primary/60" style={{animationDelay:"0ms"}} /><span className="h-1.5 w-1.5 animate-bounce rounded-full bg-primary/60" style={{animationDelay:"150ms"}} /><span className="h-1.5 w-1.5 animate-bounce rounded-full bg-primary/60" style={{animationDelay:"300ms"}} /></div>
-              <span>{t("aiWaiting")}</span>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── CUM FUNCȚIONEAZĂ ─── */}
+      <section id="cum-functioneaza" className="scroll-mt-20 border-t border-border">
+        <div className="mx-auto max-w-6xl px-6 py-24">
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="text-sm font-medium text-primary mb-3">Cum funcționează</p>
+            <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">Trei pași simpli</h2>
+            <p className="mt-4 text-muted-foreground">De la zero la progres real, în mai puțin de 5 minute.</p>
+          </div>
+
+          <div className="mt-16 grid gap-8 sm:gap-12 lg:grid-cols-3">
+            {[
+              { step: "01", title: "Alegi ce vrei să înveți", desc: "Spune AI-ului obiectivul tău — examen, skill nou, carieră. El se ocupă de rest." },
+              { step: "02", title: "AI-ul creează plan personalizat", desc: "Analizează cum înveți tu și construiește un parcurs adaptat stilului și ritmului tău." },
+              { step: "03", title: "Primești feedback în timp real", desc: "Progresul e monitorizat constant. AI-ul te corectează, te motivează și te ține pe drumul cel bun." },
+            ].map((item, i) => (
+              <div key={i} className="animate-fade-up" style={{ animationDelay: `${i * 0.1}s` }}>
+                <span className="text-4xl font-bold text-primary/20">{item.step}</span>
+                <h3 className="mt-4 text-lg font-semibold">{item.title}</h3>
+                <p className="mt-2 text-muted-foreground leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── DE CE E DIFERIT ─── */}
+      <section className="border-t border-border">
+        <div className="mx-auto max-w-6xl px-6 py-24">
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="text-sm font-medium text-primary mb-3">De ce Granted Path</p>
+            <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">Nu e un alt ChatGPT wrapper</h2>
+            <p className="mt-4 text-muted-foreground">Construit de la zero ca sistem de învățare, nu ca interfață peste un LLM.</p>
+          </div>
+
+          <div className="mt-16 grid gap-6 sm:grid-cols-2">
+            {[
+              { icon: Brain, title: "Adaptive Learning real", desc: "AI-ul ajustează format, dificultate și ritm bazat pe cum performezi — nu pe ce bifezi." },
+              { icon: BarChart3, title: "Tracking progres detaliat", desc: "Fiecare sesiune, fiecare răspuns, fiecare tipar — analizat și vizualizat în timp real." },
+              { icon: Zap, title: "Feedback inteligent", desc: "Te corectează când greșești. Nu te aprobă fals. Ca un profesor real, nu un yes-man." },
+              { icon: Target, title: "Personalizare continuă", desc: "Învață despre tine în timp. Detectează ce ești pe cale să uiți și intervine preventiv." },
+            ].map((item, i) => {
+              const Icon = item.icon;
+              return (
+                <div key={i} className="group rounded-xl border border-border bg-card p-6 transition-all hover:border-primary/30">
+                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <h3 className="text-base font-semibold">{item.title}</h3>
+                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── REZULTATE / STATS ─── */}
+      <section className="border-t border-border bg-card">
+        <div className="mx-auto max-w-6xl px-6 py-24">
+          <div className="mx-auto max-w-2xl text-center mb-16">
+            <p className="text-sm font-medium text-primary mb-3">Rezultate</p>
+            <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">Numere care contează</h2>
+          </div>
+
+          <div className="grid gap-8 sm:grid-cols-3">
+            {[
+              { value: "+60%", label: "Retenție informații", desc: "Comparativ cu învățarea tradițională pasivă" },
+              { value: "2x", label: "Viteză de învățare", desc: "Prin adaptare în timp real la stilul tău" },
+              { value: "24/7", label: "Tutor AI disponibil", desc: "Oricând ai nevoie, fără programare" },
+            ].map((stat, i) => (
+              <div key={i} className="text-center">
+                <p className="text-5xl font-bold text-gradient">{stat.value}</p>
+                <p className="mt-3 font-semibold">{stat.label}</p>
+                <p className="mt-1 text-sm text-muted-foreground">{stat.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── SOCIAL PROOF ─── */}
+      <section className="border-t border-border">
+        <div className="mx-auto max-w-6xl px-6 py-24">
+          <div className="mx-auto max-w-2xl text-center mb-16">
+            <p className="text-sm font-medium text-primary mb-3">Testimoniale</p>
+            <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">Ce spun utilizatorii</h2>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-3">
+            {[
+              { name: "Maria P.", role: "Studentă Medicină", text: "Am trecut examenul de anatomie cu AI Coach. M-a forțat să înțeleg, nu doar să memorez." },
+              { name: "Andrei M.", role: "Software Engineer", text: "Pregătirea pentru interviu tehnic a fost de 10x mai eficientă decât LeetCode singur." },
+              { name: "Elena D.", role: "Profesor Liceu", text: "Portal-ul de educație mi-a schimbat complet modul de monitorizare al elevilor." },
+            ].map((t, i) => (
+              <div key={i} className="rounded-xl border border-border bg-card p-6">
+                <div className="flex gap-1 mb-4">
+                  {[1,2,3,4,5].map(s => <Star key={s} className="h-4 w-4 fill-primary text-primary" />)}
+                </div>
+                <p className="text-sm leading-relaxed text-muted-foreground">&ldquo;{t.text}&rdquo;</p>
+                <div className="mt-4 border-t border-border pt-4">
+                  <p className="text-sm font-medium">{t.name}</p>
+                  <p className="text-xs text-muted-foreground">{t.role}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-12 flex items-center justify-center gap-8 text-sm text-muted-foreground">
+            <div className="text-center">
+              <p className="text-2xl font-semibold text-foreground">2,800+</p>
+              <p>Utilizatori activi</p>
+            </div>
+            <div className="h-8 w-px bg-border" />
+            <div className="text-center">
+              <p className="text-2xl font-semibold text-foreground">4.9/5</p>
+              <p>Rating mediu</p>
+            </div>
+            <div className="h-8 w-px bg-border" />
+            <div className="text-center">
+              <p className="text-2xl font-semibold text-foreground">12+</p>
+              <p>Domenii de studiu</p>
             </div>
           </div>
         </div>
-        <p className="mt-4 text-center text-sm text-muted-foreground">{t("aiHonest")}</p>
-      </div></div>
-    </section>
+      </section>
 
-    {/* FEATURES */}
-    <section id="features" className="scroll-mt-20">
-      <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">{tf("title")} <span className="text-gradient">Granted Path</span>?</h2>
-          <p className="mt-4 text-lg text-muted-foreground">{tf("subtitle")}</p>
+      {/* ─── PRICING ─── */}
+      <section id="pricing" className="scroll-mt-20 border-t border-border bg-card">
+        <div className="mx-auto max-w-6xl px-6 py-24">
+          <div className="mx-auto max-w-2xl text-center mb-16">
+            <p className="text-sm font-medium text-primary mb-3">Prețuri</p>
+            <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">Simplu și transparent</h2>
+            <p className="mt-4 text-muted-foreground">Începe gratuit. Fără card de credit.</p>
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-3">
+            {[
+              { name: "Free", price: "€0", period: "", desc: "Pentru explorare", features: ["2 cursuri active", "20 mesaje AI/zi", "Analize de bază"], cta: "Începe gratuit", highlighted: false },
+              { name: "Pro", price: "€30", period: "/lună", desc: "Pentru învățare serioasă", features: ["Cursuri nelimitate", "AI nelimitat", "Mod Panica — examen", "Tutor vocal", "Certificate"], cta: "Începe Pro", highlighted: true },
+              { name: "Business", price: "€9", period: "/loc/lună", desc: "Pentru echipe și companii", features: ["Tot din Pro", "Portal management", "Analize echipă", "SSO & integrări", "Support prioritar"], cta: "Contactează-ne", highlighted: false },
+            ].map((plan, i) => (
+              <div key={i} className={`relative flex flex-col rounded-xl border p-8 ${plan.highlighted ? "border-primary bg-primary/[0.03]" : "border-border bg-card"}`}>
+                {plan.highlighted && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-0.5 text-xs font-medium text-primary-foreground">
+                    Recomandat
+                  </div>
+                )}
+                <h3 className="text-lg font-semibold">{plan.name}</h3>
+                <div className="mt-4 flex items-baseline gap-1">
+                  <span className="text-4xl font-bold">{plan.price}</span>
+                  {plan.period && <span className="text-sm text-muted-foreground">{plan.period}</span>}
+                </div>
+                <p className="mt-2 text-sm text-muted-foreground">{plan.desc}</p>
+                <ul className="mt-6 flex-1 space-y-3">
+                  {plan.features.map(f => (
+                    <li key={f} className="flex items-start gap-3 text-sm">
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                      <span>{f}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Link href={plan.name === "Business" ? "/contact" : "/register"} className="mt-8">
+                  <Button variant={plan.highlighted ? "default" : "outline"} className="w-full h-11">
+                    {plan.cta}
+                  </Button>
+                </Link>
+              </div>
+            ))}
+          </div>
         </div>
-        <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          <FC icon={<Brain className="h-5 w-5" />} title={tf("adaptive")} desc={tf("adaptiveDesc")} />
-          <FC icon={<BarChart3 className="h-5 w-5" />} title={tf("tracking")} desc={tf("trackingDesc")} />
-          <FC icon={<ShieldCheck className="h-5 w-5" />} title={tf("honest")} desc={tf("honestDesc")} />
-          <FC icon={<Zap className="h-5 w-5" />} title={tf("panic")} desc={tf("panicDesc")} />
-          <FC icon={<Target className="h-5 w-5" />} title={tf("knowledge")} desc={tf("knowledgeDesc")} />
-          <FC icon={<Trophy className="h-5 w-5" />} title={tf("fun")} desc={tf("funDesc")} />
+      </section>
+
+      {/* ─── FAQ ─── */}
+      <section className="border-t border-border">
+        <div className="mx-auto max-w-3xl px-6 py-24">
+          <div className="text-center mb-12">
+            <p className="text-sm font-medium text-primary mb-3">FAQ</p>
+            <h2 className="text-3xl font-semibold tracking-tight">Întrebări frecvente</h2>
+          </div>
+
+          <div className="divide-y divide-border">
+            {[
+              { q: "Este gratuit?", a: "Da, planul Free este gratuit pe viață. Include 2 cursuri active și 20 mesaje AI pe zi. Poți face upgrade oricând." },
+              { q: "Ce limbă vorbește AI-ul?", a: "AI-ul vorbește în română și engleză. Detectează automat limba ta sau o poți seta din setări." },
+              { q: "Funcționează pentru examene?", a: "Da. Modul Panica creează un plan focusat pe ce mai ai de învățat. Am cursuri pentru BAC, permis auto, certificări IT și multe altele." },
+              { q: "Pot să-l folosesc pentru echipa mea?", a: "Absolut. Planul Business include portal de management, analize pe echipă, SSO și support dedicat." },
+              { q: "Datele mele sunt în siguranță?", a: "Da. Respectăm GDPR complet. Datele sunt stocate în EU, criptate, și nu le folosim pentru antrenarea modelelor AI." },
+            ].map((item, i) => (
+              <div key={i} className="py-5">
+                <button onClick={() => setFaqOpen(faqOpen === i ? null : i)} className="flex w-full items-center justify-between text-left">
+                  <span className="font-medium">{item.q}</span>
+                  <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${faqOpen === i ? "rotate-180" : ""}`} />
+                </button>
+                {faqOpen === i && (
+                  <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{item.a}</p>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    {/* HOW IT WORKS */}
-    <section id="how-it-works" className="scroll-mt-20 border-y border-border/50 bg-muted/20">
-      <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl text-center"><h2 className="text-3xl font-bold sm:text-4xl">{tc("learnMore")}</h2></div>
-        <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          <SC step={1} icon={<MessageSquare className="h-5 w-5" />} title="Spune-ne obiectivul" desc="Examen in 2 zile? Skill nou? Spune AI-ului ce ai nevoie." />
-          <SC step={2} icon={<Brain className="h-5 w-5" />} title="AI creeaza planul" desc="Tutorul tau AI construieste un parcurs personalizat." />
-          <SC step={3} icon={<BookOpen className="h-5 w-5" />} title="Invata in stilul tau" desc="Lectii, exercitii, flashcard-uri, conversatii AI — adaptate stilului tau." />
-          <SC step={4} icon={<Clock className="h-5 w-5" />} title="AI te tine pe drumul cel bun" desc="Memento-uri inteligente si repetitie spatiata." />
+      {/* ─── FINAL CTA ─── */}
+      <section className="border-t border-border">
+        <div className="mx-auto max-w-6xl px-6 py-24">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+              Gata să înveți <span className="text-gradient">mai eficient</span>?
+            </h2>
+            <p className="mt-4 text-muted-foreground">Crează un cont gratuit în 30 de secunde. Fără card de credit.</p>
+            <div className="mt-8">
+              <Link href="/register">
+                <Button size="lg" className="h-12 px-10 text-base font-medium">
+                  Începe gratuit
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+          </div>
         </div>
-      </div>
-    </section>
-
-    {/* DOMAINS */}
-    <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-2xl text-center"><h2 className="text-3xl font-bold sm:text-4xl">{t("title")} <span className="text-gradient">Orice</span></h2><p className="mt-4 text-lg text-muted-foreground">12+ domenii si in crestere.</p></div>
-      <div className="mt-12 flex flex-wrap justify-center gap-3">
-        {["IT & Programare","Marketing","Business & Management","Limbi Straine","Pregatire Examene","Stiinte","Design & Creativitate","Finante & Contabilitate","Drept & Legislatie","Sanatate & Medicina","Soft Skills","Scoala de Soferi","Subiecte Custom"].map((d) => (<Badge key={d} variant="outline" className="px-4 py-2 text-sm font-medium hover:bg-primary/10 hover:text-primary transition-colors">{d}</Badge>))}
-      </div>
-    </section>
-
-    {/* FOR EVERYONE */}
-    <section className="border-y border-border/50 bg-muted/20">
-      <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl text-center"><h2 className="text-3xl font-bold sm:text-4xl">Construit pentru Toata Lumea</h2><p className="mt-4 text-lg text-muted-foreground">Persoane fizice, scoli, universitati si companii.</p></div>
-        <div className="mt-16 grid gap-8 md:grid-cols-3">
-          <AC icon={<Sparkles className="h-6 w-6" />} title="Pentru Persoane Fizice" desc="Un tutor AI personal disponibil 24/7." features={["Parcursuri personalizate","Asistent AI de studiu","Simulatoare de examen","Certificate"]} cta={tc("getStarted")} href="/register" />
-          <AC icon={<GraduationCap className="h-6 w-6" />} title="Pentru Educatie" desc="Ofera fiecarui elev un tutor AI personal." features={["Panouri pentru profesori","Sistem de teme","Analize clase","Acces parinti"]} cta="Planuri Educatie" href="/pricing#education" />
-          <AC icon={<Building2 className="h-6 w-6" />} title="Pentru Afaceri" desc="Dezvolta echipa cu training AI." features={["Managementul echipelor","Matricea competentelor","Urmarire conformitate","Integrare SSO"]} cta="Planuri Business" href="/pricing#business" />
-        </div>
-      </div>
-    </section>
-
-    {/* PRICING PREVIEW */}
-    <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-2xl text-center"><h2 className="text-3xl font-bold sm:text-4xl">{tp("title")}</h2><p className="mt-4 text-lg text-muted-foreground">{tp("subtitle")}</p></div>
-      <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <PC name="Explorer" price={tc("free")} desc="Pentru inceput" features={["2 cursuri active","20 mesaje AI/zi","Analize de baza"]} freePlan ctaLabel={tc("getStarted")} regLabel={tc("register")} />
-        <PC name="Starter" price={"\u20AC10"} period={tc("perMonth")} desc="Mai multe cursuri, fara reclame" features={["5 cursuri active","100 mesaje AI/zi","Mod vocal"]} ctaLabel="Aboneaza-te" regLabel={tc("register")} />
-        <PC name="Pro" price={"\u20AC30"} period={tc("perMonth")} desc="Nelimitat + AI avansat" features={["Cursuri nelimitate","AI nelimitat","Mod Panica"]} highlighted ctaLabel="Aboneaza-te" regLabel={tc("register")} popLabel={tp("mostPopular")} />
-        <PC name="Master" price={"\u20AC60"} period={tc("perMonth")} desc="Tutoring AI 1-la-1" features={["Sesiuni de tutoring AI","Simulator interviuri","Review expert"]} ctaLabel="Aboneaza-te" regLabel={tc("register")} />
-      </div>
-      <div className="mt-8 text-center"><Link href="/pricing"><Button variant="outline" size="lg">{tp("title")}<ArrowRight className="ml-2 h-4 w-4" /></Button></Link></div>
-    </section>
-
-    {/* FINAL CTA */}
-    <section className="relative overflow-hidden border-t border-border/50">
-      <div className="absolute inset-0 bg-grid opacity-30" />
-      <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-3xl font-bold sm:text-4xl">Gata sa inveti <span className="text-gradient">mai destept</span>?</h2>
-          <p className="mt-4 text-lg text-muted-foreground">Incepe gratuit, fara card de credit.</p>
-          <div className="mt-8"><Link href="/register"><Button size="lg" className="glow-amber text-base px-10 h-12">{tc("getStarted")}<ArrowRight className="ml-2 h-4 w-4" /></Button></Link></div>
-        </div>
-      </div>
-    </section>
-  </>);
-}
-
-function FC({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
-  return (<div className="group rounded-xl border border-border/50 bg-card p-6 transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5">
-    <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">{icon}</div>
-    <h3 className="text-lg font-semibold">{title}</h3><p className="mt-2 text-sm text-muted-foreground leading-relaxed">{desc}</p>
-  </div>);
-}
-function SC({ step, icon, title, desc }: { step: number; icon: React.ReactNode; title: string; desc: string }) {
-  return (<div className="relative text-center">
-    <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">{icon}</div>
-    <div className="absolute -top-2 left-1/2 ml-5 flex h-6 w-6 -translate-x-1/2 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">{step}</div>
-    <h3 className="text-base font-semibold">{title}</h3><p className="mt-2 text-sm text-muted-foreground leading-relaxed">{desc}</p>
-  </div>);
-}
-function AC({ icon, title, desc, features, cta, href }: { icon: React.ReactNode; title: string; desc: string; features: string[]; cta: string; href: string }) {
-  return (<div className="flex flex-col rounded-xl border border-border/50 bg-card p-6">
-    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">{icon}</div>
-    <h3 className="text-xl font-semibold">{title}</h3><p className="mt-2 text-sm text-muted-foreground">{desc}</p>
-    <ul className="mt-4 flex-1 space-y-2">{features.map((f) => (<li key={f} className="flex items-start gap-2 text-sm"><Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{f}</li>))}</ul>
-    <Link href={href} className="mt-6"><Button variant="outline" className="w-full">{cta}<ArrowRight className="ml-2 h-4 w-4" /></Button></Link>
-  </div>);
-}
-function PC({ name, price, period, desc, features, highlighted, freePlan, ctaLabel, regLabel, popLabel }: { name: string; price: string; period?: string; desc: string; features: string[]; highlighted?: boolean; freePlan?: boolean; ctaLabel: string; regLabel: string; popLabel?: string }) {
-  return (<div className={`relative flex flex-col rounded-xl border p-6 ${highlighted ? "border-primary/50 bg-primary/5 shadow-lg shadow-primary/10" : "border-border/50 bg-card"}`}>
-    {highlighted && popLabel && <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">{popLabel}</Badge>}
-    <h3 className="text-lg font-semibold">{name}</h3>
-    <div className="mt-2 flex items-baseline"><span className="text-3xl font-bold">{price}</span>{period && <span className="ml-1 text-sm text-muted-foreground">{period}</span>}</div>
-    <p className="mt-2 text-sm text-muted-foreground">{desc}</p>
-    <ul className="mt-4 flex-1 space-y-2">{features.map((f) => (<li key={f} className="flex items-center gap-2 text-sm"><Check className="h-3.5 w-3.5 text-primary" />{f}</li>))}</ul>
-    <Link href="/register" className="mt-6"><Button variant={highlighted ? "default" : "outline"} className={`w-full ${highlighted ? "glow-amber" : ""}`}>{freePlan ? ctaLabel : ctaLabel}</Button></Link>
-  </div>);
+      </section>
+    </>
+  );
 }
