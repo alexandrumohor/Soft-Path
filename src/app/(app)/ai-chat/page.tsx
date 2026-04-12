@@ -15,18 +15,15 @@ const QP = [
 
 export default function AIChatPage() {
   const [input,setInput]=useState("");
-  const endRef=useRef<HTMLDivElement>(null);
+  const chatRef=useRef<HTMLDivElement>(null);
   const inputRef=useRef<HTMLTextAreaElement>(null);
   const {messages,isLoading,error,sendMessage,stopGenerating,clearMessages}=useAIChat({toughLove:"BALANCED"});
 
   useEffect(()=>{
-    if(messages.length>0){
-      const container=endRef.current?.parentElement;
-      if(container){
-        const isNearBottom=container.scrollHeight-container.scrollTop-container.clientHeight<200;
-        if(isNearBottom)endRef.current?.scrollIntoView({behavior:"smooth"});
-      }
-    }
+    const el=chatRef.current;
+    if(!el||messages.length===0)return;
+    const isNearBottom=el.scrollHeight-el.scrollTop-el.clientHeight<200;
+    if(isNearBottom)el.scrollTop=el.scrollHeight;
   },[messages]);
   function onInput(e:React.ChangeEvent<HTMLTextAreaElement>){setInput(e.target.value);e.target.style.height="auto";e.target.style.height=Math.min(e.target.scrollHeight,200)+"px";}
   function onSubmit(e:React.FormEvent){e.preventDefault();if(!input.trim()||isLoading)return;sendMessage(input);setInput("");if(inputRef.current)inputRef.current.style.height="auto";}
@@ -39,7 +36,7 @@ export default function AIChatPage() {
         <div className="flex items-center gap-2"><Badge variant="outline" className="text-xs">Balanced Mode</Badge>{messages.length>0&&<Button variant="ghost" size="sm" onClick={clearMessages}><Trash2 className="h-3.5 w-3.5"/></Button>}</div>
       </div>
 
-      <div className="flex-1 overflow-y-auto">
+      <div ref={chatRef} className="flex-1 overflow-y-auto">
         {messages.length===0?(
           <div className="flex h-full flex-col items-center justify-center px-4">
             <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary"><Sparkles className="h-8 w-8"/></div>
@@ -59,7 +56,7 @@ export default function AIChatPage() {
               </div>
             ))}
             {error&&<div className="rounded-lg bg-destructive/10 px-4 py-3 text-sm text-destructive">{error}</div>}
-            <div ref={endRef}/>
+            <div/>
           </div>
         )}
       </div>
