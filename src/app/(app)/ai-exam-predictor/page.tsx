@@ -18,20 +18,20 @@ const exam = {
 };
 
 const predictions = [
-  { topic: "VPC networking & security groups", confidence: 94, yourMastery: 71, weight: "mare", practice: 18 },
-  { topic: "IAM roles and cross-account access", confidence: 92, yourMastery: 58, weight: "mare", practice: 14 },
-  { topic: "S3 encryption and lifecycle policies", confidence: 88, yourMastery: 82, weight: "medie", practice: 12 },
-  { topic: "Route 53 routing policies", confidence: 85, yourMastery: 45, weight: "medie", practice: 11 },
-  { topic: "RDS multi-AZ vs read replicas", confidence: 83, yourMastery: 77, weight: "medie", practice: 10 },
-  { topic: "Auto Scaling & ELB configuration", confidence: 81, yourMastery: 63, weight: "medie", practice: 9 },
-  { topic: "CloudFront & edge caching", confidence: 72, yourMastery: 51, weight: "mica", practice: 7 },
-  { topic: "Lambda cold starts & provisioned concurrency", confidence: 68, yourMastery: 39, weight: "mica", practice: 6 },
+  { topic: "Retele VPC si grupuri de securitate", confidence: 94, yourMastery: 71, weight: "mare", practice: 18 },
+  { topic: "Roluri IAM si acces cross-account", confidence: 92, yourMastery: 58, weight: "mare", practice: 14 },
+  { topic: "Criptare S3 si politici de ciclu de viata", confidence: 88, yourMastery: 82, weight: "medie", practice: 12 },
+  { topic: "Politici de rutare Route 53", confidence: 85, yourMastery: 45, weight: "medie", practice: 11 },
+  { topic: "RDS multi-AZ vs replici de citire", confidence: 83, yourMastery: 77, weight: "medie", practice: 10 },
+  { topic: "Auto Scaling si configurare ELB", confidence: 81, yourMastery: 63, weight: "medie", practice: 9 },
+  { topic: "CloudFront si cache la margine", confidence: 72, yourMastery: 51, weight: "mica", practice: 7 },
+  { topic: "Lambda cold starts si concurenta provizionata", confidence: 68, yourMastery: 39, weight: "mica", practice: 6 },
 ];
 
 const criticalGaps = [
-  { topic: "Route 53 routing policies", reason: "Subiect cu incredere mare dar stapanire sub 50%", priority: "urgent" },
+  { topic: "Politici de rutare Route 53", reason: "Subiect cu incredere mare dar stapanire sub 50%", priority: "urgent" },
   { topic: "Lambda cold starts", reason: "A aparut in 4 din ultimele 5 examene similare", priority: "ridicat" },
-  { topic: "IAM cross-account access", reason: "Subiectul tau cel mai slab cu pondere mare", priority: "ridicat" },
+  { topic: "Acces IAM cross-account", reason: "Subiectul tau cel mai slab cu pondere mare", priority: "ridicat" },
 ];
 
 export default function ExamPredictorPage() {
