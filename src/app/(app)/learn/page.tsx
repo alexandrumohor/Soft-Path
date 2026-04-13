@@ -14,7 +14,7 @@ type Course = {
   estimatedHours: number; language: string; rating: number; enrollmentCount: number;
 };
 
-const CATEGORIES = ["All", "IT & Programming", "Marketing", "Foreign Languages", "Exam Preparation", "Business & Management"];
+const CATEGORIES = ["Toate", "IT & Programare", "Marketing", "Limbi Straine", "Pregatire Examene", "Business & Management"];
 const DIFFICULTIES = ["All", "BEGINNER", "INTERMEDIATE", "ADVANCED"];
 
 export default function LearnPage() {

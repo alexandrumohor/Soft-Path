@@ -12,26 +12,26 @@ import { cn } from "@/lib/utils";
 
 const exam = {
   name: "AWS Solutions Architect Associate",
-  date: "May 18, 2026",
+  date: "18 Mai, 2026",
   daysAway: 37,
   readiness: 64,
 };
 
 const predictions = [
-  { topic: "VPC networking & security groups", confidence: 94, yourMastery: 71, weight: "heavy", practice: 18 },
-  { topic: "IAM roles and cross-account access", confidence: 92, yourMastery: 58, weight: "heavy", practice: 14 },
-  { topic: "S3 encryption and lifecycle policies", confidence: 88, yourMastery: 82, weight: "medium", practice: 12 },
-  { topic: "Route 53 routing policies", confidence: 85, yourMastery: 45, weight: "medium", practice: 11 },
-  { topic: "RDS multi-AZ vs read replicas", confidence: 83, yourMastery: 77, weight: "medium", practice: 10 },
-  { topic: "Auto Scaling & ELB configuration", confidence: 81, yourMastery: 63, weight: "medium", practice: 9 },
-  { topic: "CloudFront & edge caching", confidence: 72, yourMastery: 51, weight: "light", practice: 7 },
-  { topic: "Lambda cold starts & provisioned concurrency", confidence: 68, yourMastery: 39, weight: "light", practice: 6 },
+  { topic: "VPC networking & security groups", confidence: 94, yourMastery: 71, weight: "mare", practice: 18 },
+  { topic: "IAM roles and cross-account access", confidence: 92, yourMastery: 58, weight: "mare", practice: 14 },
+  { topic: "S3 encryption and lifecycle policies", confidence: 88, yourMastery: 82, weight: "medie", practice: 12 },
+  { topic: "Route 53 routing policies", confidence: 85, yourMastery: 45, weight: "medie", practice: 11 },
+  { topic: "RDS multi-AZ vs read replicas", confidence: 83, yourMastery: 77, weight: "medie", practice: 10 },
+  { topic: "Auto Scaling & ELB configuration", confidence: 81, yourMastery: 63, weight: "medie", practice: 9 },
+  { topic: "CloudFront & edge caching", confidence: 72, yourMastery: 51, weight: "mica", practice: 7 },
+  { topic: "Lambda cold starts & provisioned concurrency", confidence: 68, yourMastery: 39, weight: "mica", practice: 6 },
 ];
 
 const criticalGaps = [
   { topic: "Route 53 routing policies", reason: "Subiect cu incredere mare dar stapanire sub 50%", priority: "urgent" },
-  { topic: "Lambda cold starts", reason: "A aparut in 4 din ultimele 5 examene similare", priority: "high" },
-  { topic: "IAM cross-account access", reason: "Subiectul tau cel mai slab cu pondere mare", priority: "high" },
+  { topic: "Lambda cold starts", reason: "A aparut in 4 din ultimele 5 examene similare", priority: "ridicat" },
+  { topic: "IAM cross-account access", reason: "Subiectul tau cel mai slab cu pondere mare", priority: "ridicat" },
 ];
 
 export default function ExamPredictorPage() {
@@ -93,7 +93,7 @@ export default function ExamPredictorPage() {
                 <p className="mt-3 font-semibold">{g.topic}</p>
                 <p className="mt-1 text-xs text-muted-foreground">{g.reason}</p>
                 <Button variant="outline" size="sm" className="mt-4 w-full">
-                  Practice Now<ArrowRight className="ml-2 h-3 w-3" />
+                  Exerseaza Acum<ArrowRight className="ml-2 h-3 w-3" />
                 </Button>
               </CardContent>
             </Card>
@@ -104,7 +104,7 @@ export default function ExamPredictorPage() {
       {/* Predictions */}
       <div>
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Predicted Topics ({predictions.length})</h2>
+          <h2 className="text-lg font-semibold">Subiecte Prezise ({predictions.length})</h2>
           <div className="flex gap-1 rounded-lg border border-border/50 p-1">
             {(["all", "weak", "strong"] as const).map(f => (
               <button
@@ -115,7 +115,7 @@ export default function ExamPredictorPage() {
                   filter === f ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                {f === "all" ? "All" : f === "weak" ? "Weak (<65%)" : "Strong (≥65%)"}
+                {f === "all" ? "Toate" : f === "weak" ? "Slabe (<65%)" : "Puternice (≥65%)"}
               </button>
             ))}
           </div>

@@ -99,7 +99,7 @@ export default function AIPlannerPage() {
             <Zap className="h-5 w-5 text-primary" />
             <div className="flex-1">
               <p className="text-sm font-semibold">{t("changeGoal")}</p>
-              <p className="text-xs text-muted-foreground">e.g., "I have an exam May 20", "only 30 min/day this week"</p>
+              <p className="text-xs text-muted-foreground">ex: "Am examen pe 20 mai", "doar 30 min/zi saptamana asta"</p>
             </div>
             <div className="flex flex-1 max-w-md gap-2">
               <input
@@ -154,7 +154,7 @@ export default function AIPlannerPage() {
         <CardContent className="pt-6">
           <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold">
             <Sun className="h-4 w-4 text-amber-400" />
-            Your Energy Profile <span className="text-xs font-normal text-muted-foreground">(invatat din 127 sesiuni)</span>
+            Profilul Tau de Energie <span className="text-xs font-normal text-muted-foreground">(invatat din 127 sesiuni)</span>
           </h3>
           <div className="grid grid-cols-[repeat(24,minmax(0,1fr))] gap-0.5 md:gap-1">
             {Array.from({ length: 24 }).map((_, h) => {
@@ -176,8 +176,8 @@ export default function AIPlannerPage() {
             })}
           </div>
           <div className="mt-3 flex items-center justify-center gap-4 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1"><Sun className="h-3 w-3 text-amber-400" />Peak: 9–11am</span>
-            <span className="flex items-center gap-1"><Moon className="h-3 w-3 text-blue-400" />Low: 2–4pm post-lunch dip</span>
+            <span className="flex items-center gap-1"><Sun className="h-3 w-3 text-amber-400" />Varf: 9–11 dimineata</span>
+            <span className="flex items-center gap-1"><Moon className="h-3 w-3 text-blue-400" />Scazut: 2–4 dupa-amiaza</span>
           </div>
         </CardContent>
       </Card>

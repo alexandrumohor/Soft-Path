@@ -13,135 +13,135 @@ const db = new PrismaClient({ adapter });
 
 async function seedAchievements() {
   const achievements = [
-    { name: "First Steps", description: "Complete your first lesson", rarity: "COMMON", condition: { type: "lessons_completed", count: 1 } },
-    { name: "Curious Mind", description: "Complete 10 lessons", rarity: "COMMON", condition: { type: "lessons_completed", count: 10 } },
-    { name: "Dedicated Learner", description: "Complete 50 lessons", rarity: "UNCOMMON", condition: { type: "lessons_completed", count: 50 } },
-    { name: "Course Crusher", description: "Finish your first course", rarity: "UNCOMMON", condition: { type: "courses_completed", count: 1 } },
-    { name: "Streak Starter", description: "Maintain a 7-day learning streak", rarity: "COMMON", condition: { type: "streak_days", count: 7 } },
-    { name: "Iron Streak", description: "Maintain a 30-day learning streak", rarity: "RARE", condition: { type: "streak_days", count: 30 } },
-    { name: "Diamond Streak", description: "Maintain a 100-day learning streak", rarity: "EPIC", condition: { type: "streak_days", count: 100 } },
-    { name: "Quiz Champion", description: "Score 100% on 10 quizzes", rarity: "UNCOMMON", condition: { type: "perfect_quizzes", count: 10 } },
-    { name: "Exam Ready", description: "Complete a full exam simulation", rarity: "RARE", condition: { type: "exams_completed", count: 1 } },
-    { name: "Polyglot", description: "Start courses in 3 different languages", rarity: "RARE", condition: { type: "languages_started", count: 3 } },
-    { name: "Helping Hand", description: "Answer 25 questions in study groups", rarity: "UNCOMMON", condition: { type: "group_answers", count: 25 } },
-    { name: "Night Owl", description: "Study for 30 minutes after 10 PM", rarity: "COMMON", condition: { type: "late_session", count: 1 } },
-    { name: "Early Bird", description: "Study for 30 minutes before 7 AM", rarity: "COMMON", condition: { type: "early_session", count: 1 } },
-    { name: "Granted Master", description: "Complete 10 courses with 90%+ average", rarity: "LEGENDARY", condition: { type: "master_courses", count: 10 } },
+    { name: "Primii Pasi", description: "Completeaza prima ta lectie", rarity: "COMMON", condition: { type: "lessons_completed", count: 1 } },
+    { name: "Minte Curioasa", description: "Completeaza 10 lectii", rarity: "COMMON", condition: { type: "lessons_completed", count: 10 } },
+    { name: "Cursant Dedicat", description: "Completeaza 50 de lectii", rarity: "UNCOMMON", condition: { type: "lessons_completed", count: 50 } },
+    { name: "Demolator de Cursuri", description: "Termina primul tau curs", rarity: "UNCOMMON", condition: { type: "courses_completed", count: 1 } },
+    { name: "Seria Incepe", description: "Mentine o serie de invatare de 7 zile", rarity: "COMMON", condition: { type: "streak_days", count: 7 } },
+    { name: "Serie de Fier", description: "Mentine o serie de invatare de 30 de zile", rarity: "RARE", condition: { type: "streak_days", count: 30 } },
+    { name: "Serie de Diamant", description: "Mentine o serie de invatare de 100 de zile", rarity: "EPIC", condition: { type: "streak_days", count: 100 } },
+    { name: "Campion la Quiz", description: "Obtine 100% la 10 quiz-uri", rarity: "UNCOMMON", condition: { type: "perfect_quizzes", count: 10 } },
+    { name: "Pregatit de Examen", description: "Completeaza o simulare de examen completa", rarity: "RARE", condition: { type: "exams_completed", count: 1 } },
+    { name: "Poliglot", description: "Incepe cursuri in 3 limbi diferite", rarity: "RARE", condition: { type: "languages_started", count: 3 } },
+    { name: "Mana de Ajutor", description: "Raspunde la 25 de intrebari in grupuri de studiu", rarity: "UNCOMMON", condition: { type: "group_answers", count: 25 } },
+    { name: "Bufnita de Noapte", description: "Studiaza 30 de minute dupa ora 22", rarity: "COMMON", condition: { type: "late_session", count: 1 } },
+    { name: "Pasare Matinala", description: "Studiaza 30 de minute inainte de ora 7", rarity: "COMMON", condition: { type: "early_session", count: 1 } },
+    { name: "Maestru Granted", description: "Completeaza 10 cursuri cu media 90%+", rarity: "LEGENDARY", condition: { type: "master_courses", count: 10 } },
   ] as const;
 
+  // Delete old achievements first
+  await db.achievement.deleteMany({});
+
   for (const a of achievements) {
-    await db.achievement.upsert({
-      where: { name: a.name },
-      update: { description: a.description, rarity: a.rarity, condition: a.condition },
-      create: { name: a.name, description: a.description, rarity: a.rarity, condition: a.condition },
+    await db.achievement.create({
+      data: { name: a.name, description: a.description, rarity: a.rarity, condition: a.condition },
     });
   }
-  console.log(`✓ ${achievements.length} achievements seeded`);
+  console.log(`✓ ${achievements.length} realizari adaugate`);
 }
 
 async function seedCourses() {
+  // Delete old courses (cascades to modules + lessons)
+  await db.lesson.deleteMany({});
+  await db.module.deleteMany({});
+  await db.course.deleteMany({});
+
   const courses = [
     {
-      slug: "python-fundamentals",
-      title: "Python Fundamentals",
-      description: "Learn Python from zero — variables, control flow, functions, OOP, and your first real project. Designed for complete beginners.",
+      slug: "fundamentele-python",
+      title: "Fundamentele Python",
+      description: "Invata Python de la zero — variabile, flux de control, functii, OOP si primul tau proiect real. Creat pentru incepatori completi.",
       category: "IT_PROGRAMMING",
-      subcategory: "Programming",
+      subcategory: "Programare",
       difficulty: "BEGINNER",
       estimatedHours: 12,
-      language: "en",
+      language: "ro",
       modules: [
-        { title: "Getting Started with Python", lessons: ["Why Python?", "Installing Python and VS Code", "Your first Python script", "Variables and types"] },
-        { title: "Control Flow", lessons: ["if / elif / else", "for and while loops", "Break, continue, pass", "Practical exercises"] },
-        { title: "Functions and Modules", lessons: ["Defining functions", "Arguments and return values", "Importing modules", "Standard library tour"] },
-        { title: "Object-Oriented Python", lessons: ["Classes and objects", "Inheritance", "Magic methods", "Building a small CLI tool"] },
+        { title: "Primii Pasi cu Python", lessons: ["De ce Python?", "Instalarea Python si VS Code", "Primul tau script Python", "Variabile si tipuri"] },
+        { title: "Flux de Control", lessons: ["if / elif / else", "Bucle for si while", "Break, continue, pass", "Exercitii practice"] },
+        { title: "Functii si Module", lessons: ["Definirea functiilor", "Argumente si valori returnate", "Importarea modulelor", "Tur al bibliotecii standard"] },
+        { title: "Python Orientat pe Obiecte", lessons: ["Clase si obiecte", "Mostenire", "Metode magice", "Construirea unui mic tool CLI"] },
       ],
     },
     {
-      slug: "javascript-essentials",
-      title: "JavaScript Essentials",
-      description: "Modern JavaScript from the ground up — ES6+, async, DOM, fetch API, and how to build interactive web pages.",
+      slug: "esentialele-javascript",
+      title: "Esentialele JavaScript",
+      description: "JavaScript modern de la baza — ES6+, async, DOM, fetch API si cum sa construiesti pagini web interactive.",
       category: "IT_PROGRAMMING",
-      subcategory: "Web Development",
+      subcategory: "Dezvoltare Web",
       difficulty: "BEGINNER",
       estimatedHours: 14,
-      language: "en",
+      language: "ro",
       modules: [
-        { title: "JavaScript Basics", lessons: ["What JavaScript actually does", "Variables: let, const, var", "Types and coercion", "Operators and expressions"] },
-        { title: "Functions and Scope", lessons: ["Function declarations vs expressions", "Arrow functions", "Closures explained", "this and bind"] },
-        { title: "Asynchronous JavaScript", lessons: ["Callbacks", "Promises", "Async / await", "Fetch API"] },
-        { title: "DOM and Events", lessons: ["Selecting elements", "Event listeners", "Modifying the DOM", "Building a todo app"] },
+        { title: "Bazele JavaScript", lessons: ["Ce face de fapt JavaScript", "Variabile: let, const, var", "Tipuri si conversie", "Operatori si expresii"] },
+        { title: "Functii si Scope", lessons: ["Declaratii vs expresii de functii", "Arrow functions", "Closures explicat", "this si bind"] },
+        { title: "JavaScript Asincron", lessons: ["Callback-uri", "Promises", "Async / await", "Fetch API"] },
+        { title: "DOM si Evenimente", lessons: ["Selectarea elementelor", "Event listeners", "Modificarea DOM-ului", "Construirea unei aplicatii todo"] },
       ],
     },
     {
-      slug: "marketing-fundamentals",
-      title: "Marketing Fundamentals",
-      description: "The principles every marketer should know — positioning, messaging, channels, funnels, and how to measure what matters.",
+      slug: "fundamentele-marketingului",
+      title: "Fundamentele Marketingului",
+      description: "Principiile pe care orice marketer ar trebui sa le stie — pozitionare, mesaje, canale, funnels si cum sa masori ce conteaza.",
       category: "MARKETING",
-      subcategory: "Strategy",
+      subcategory: "Strategie",
       difficulty: "BEGINNER",
       estimatedHours: 8,
-      language: "en",
+      language: "ro",
       modules: [
-        { title: "Marketing Basics", lessons: ["What marketing really is", "Customer vs product focus", "The 4 P's", "Positioning"] },
-        { title: "Channels", lessons: ["Organic vs paid", "Content marketing", "Social media", "Email marketing"] },
-        { title: "Funnels and Metrics", lessons: ["The funnel concept", "Conversion rates", "CAC and LTV", "Attribution"] },
+        { title: "Bazele Marketingului", lessons: ["Ce este de fapt marketingul", "Focus pe client vs produs", "Cei 4 P", "Pozitionarea"] },
+        { title: "Canale", lessons: ["Organic vs platit", "Marketing de continut", "Social media", "Email marketing"] },
+        { title: "Funnel-uri si Metrici", lessons: ["Conceptul de funnel", "Rate de conversie", "CAC si LTV", "Atribuire"] },
       ],
     },
     {
-      slug: "english-conversation-b2",
-      title: "English Conversation — B2",
-      description: "Speak English with confidence. Real-world conversations, idioms, pronunciation drills, and AI-powered roleplay.",
+      slug: "conversatie-engleza-b2",
+      title: "Conversatie Engleza — B2",
+      description: "Vorbeste engleza cu incredere. Conversatii din viata reala, expresii, exercitii de pronuntie si roleplay cu AI.",
       category: "LANGUAGES",
-      subcategory: "English",
+      subcategory: "Engleza",
       difficulty: "INTERMEDIATE",
       estimatedHours: 20,
-      language: "en",
+      language: "ro",
       modules: [
-        { title: "Everyday Conversation", lessons: ["Greetings and small talk", "Asking for directions", "At the restaurant", "Shopping"] },
-        { title: "Work Situations", lessons: ["Job interview basics", "Email etiquette", "Meeting vocabulary", "Negotiation phrases"] },
-        { title: "Idioms and Phrasal Verbs", lessons: ["Top 50 idioms", "Phrasal verbs with 'get'", "Phrasal verbs with 'take'", "Common mistakes"] },
+        { title: "Conversatie Zilnica", lessons: ["Saluturi si small talk", "Intrebari de directie", "La restaurant", "Cumparaturi"] },
+        { title: "Situatii de Munca", lessons: ["Bazele interviului de angajare", "Eticheta email", "Vocabular de sedinta", "Fraze de negociere"] },
+        { title: "Expresii si Phrasal Verbs", lessons: ["Top 50 expresii", "Phrasal verbs cu 'get'", "Phrasal verbs cu 'take'", "Greseli comune"] },
       ],
     },
     {
       slug: "permis-auto-categoria-b",
       title: "Permis Auto — Categoria B",
-      description: "Pregătire completă pentru examenul auto categoria B în România. Legislație, pericole, întrebări tipice.",
+      description: "Pregatire completa pentru examenul auto categoria B in Romania. Legislatie, pericole, intrebari tipice.",
       category: "EXAM_PREP",
-      subcategory: "Driving",
+      subcategory: "Sofat",
       difficulty: "BEGINNER",
       estimatedHours: 15,
       language: "ro",
       modules: [
-        { title: "Legislație Rutieră", lessons: ["Definiții esențiale", "Documente obligatorii", "Drepturi și obligații", "Sancțiuni"] },
+        { title: "Legislatie Rutiera", lessons: ["Definitii esentiale", "Documente obligatorii", "Drepturi si obligatii", "Sanctiuni"] },
         { title: "Indicatoare Rutiere", lessons: ["Indicatoare de avertizare", "Indicatoare de interzicere", "Indicatoare de obligare", "Indicatoare de orientare"] },
-        { title: "Conducere Defensivă", lessons: ["Distanța de siguranță", "Depășirea", "Intersecții fără semafor", "Condiții meteo dificile"] },
+        { title: "Conducere Defensiva", lessons: ["Distanta de siguranta", "Depasirea", "Intersectii fara semafor", "Conditii meteo dificile"] },
       ],
     },
     {
-      slug: "project-management-basics",
-      title: "Project Management Basics",
-      description: "From kickoff to delivery — scope, timeline, stakeholders, risks, and the soft skills that actually move projects forward.",
+      slug: "bazele-managementului-de-proiect",
+      title: "Bazele Managementului de Proiect",
+      description: "De la kickoff la livrare — scop, timeline, stakeholderi, riscuri si abilitatile soft care chiar misca proiectele inainte.",
       category: "BUSINESS_MANAGEMENT",
-      subcategory: "Project Management",
+      subcategory: "Management de Proiect",
       difficulty: "BEGINNER",
       estimatedHours: 10,
-      language: "en",
+      language: "ro",
       modules: [
-        { title: "Project Foundations", lessons: ["What is a project?", "Project lifecycle", "Stakeholders", "Scope and constraints"] },
-        { title: "Planning", lessons: ["Work breakdown structure", "Estimating effort", "Gantt charts", "Risk identification"] },
-        { title: "Execution and Closing", lessons: ["Daily stand-ups", "Status reporting", "Change management", "Lessons learned"] },
+        { title: "Fundamente de Proiect", lessons: ["Ce este un proiect?", "Ciclul de viata al proiectului", "Stakeholderi", "Scop si constrangeri"] },
+        { title: "Planificare", lessons: ["Structura de defalcare a muncii", "Estimarea efortului", "Diagrame Gantt", "Identificarea riscurilor"] },
+        { title: "Executie si Inchidere", lessons: ["Daily stand-ups", "Raportarea statusului", "Managementul schimbarii", "Lectii invatate"] },
       ],
     },
   ] as const;
 
   for (const c of courses) {
-    const existing = await db.course.findUnique({ where: { slug: c.slug } });
-    if (existing) {
-      console.log(`  - ${c.slug} already exists, skipping`);
-      continue;
-    }
-
     await db.course.create({
       data: {
         slug: c.slug,
@@ -165,8 +165,8 @@ async function seedCourses() {
                 estimatedMinutes: 8,
                 content: [
                   { type: "heading", text: title },
-                  { type: "paragraph", text: `Welcome to "${title}". This lesson is part of the course "${c.title}".` },
-                  { type: "paragraph", text: "AI tutor content will be generated dynamically when you start this lesson." },
+                  { type: "paragraph", text: `Bine ai venit la "${title}". Aceasta lectie face parte din cursul "${c.title}".` },
+                  { type: "paragraph", text: "Continutul tutorului AI va fi generat dinamic cand incepi aceasta lectie." },
                 ],
               })),
             },
@@ -176,19 +176,19 @@ async function seedCourses() {
     });
     console.log(`  ✓ ${c.slug}`);
   }
-  console.log(`✓ ${courses.length} courses seeded`);
+  console.log(`✓ ${courses.length} cursuri adaugate`);
 }
 
 async function main() {
-  console.log("🌱 Seeding database...\n");
+  console.log("🌱 Se populeaza baza de date...\n");
   await seedAchievements();
   await seedCourses();
-  console.log("\n✅ Seed complete");
+  console.log("\n✅ Seed complet");
 }
 
 main()
   .catch(e => {
-    console.error("❌ Seed failed:", e);
+    console.error("❌ Seed esuat:", e);
     process.exit(1);
   })
   .finally(() => db.$disconnect());

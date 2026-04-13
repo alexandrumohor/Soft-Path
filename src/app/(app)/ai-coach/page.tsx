@@ -93,7 +93,7 @@ export default function AICoachPage() {
         <Card>
           <CardContent className="pt-6">
             <div className="mb-2 flex items-center justify-between text-xs">
-              <span className="text-muted-foreground">{t("streak")}</span>
+              <span className="text-muted-foreground">Serie</span>
               <Flame className="h-3.5 w-3.5 text-orange-500" />
             </div>
             <p className="text-2xl font-bold">{weekReview.streak} <span className="text-sm font-normal text-muted-foreground">zile</span></p>
