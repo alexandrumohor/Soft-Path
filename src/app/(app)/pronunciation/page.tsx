@@ -128,7 +128,7 @@ export default function PronunciationPage() {
               <CardContent className="pt-6">
                 <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold">
                   <AlertCircle className="h-4 w-4 text-orange-500" />
-                  Areas to Improve
+                  {t("areasToImprove")}
                 </h3>
                 <div className="space-y-3">
                   {lastScore.issues.map((iss, i) => (
@@ -150,7 +150,7 @@ export default function PronunciationPage() {
               <CardContent className="pt-6">
                 <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold">
                   <CheckCircle2 className="h-4 w-4 text-green-500" />
-                  Strengths
+                  {t("strengths")}
                 </h3>
                 <ul className="space-y-2">
                   {lastScore.strengths.map((s, i) => (
