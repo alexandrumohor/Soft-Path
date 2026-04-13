@@ -72,7 +72,7 @@ export function Navbar() {
   const tn = useTranslations("nav");
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-[#EBF0FF] dark:bg-[#1a2744] backdrop-blur-xl border-b border-[#D4DEFF] dark:border-[#2a3a5c]">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-[#D6E0F5] dark:bg-[#141e33] backdrop-blur-xl border-b border-[#BCC9E8] dark:border-[#1f2e4d]">
       <nav className="mx-auto flex h-14 max-w-[1120px] items-center px-6">
         {/* Logo — NOT a link */}
         <div className="flex items-center gap-2.5 mr-8">
